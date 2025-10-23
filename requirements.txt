@@ -1,0 +1,46 @@
+# ============================================================================
+# PeruGuide AI - Core Dependencies
+# ============================================================================
+
+# LLM & RAG Framework
+langchain>=0.1.0
+langchain-community>=0.0.20
+langchain-core>=0.1.0
+
+# Embeddings & Models
+sentence-transformers>=2.2.0
+torch>=2.0.0
+transformers>=4.35.0
+
+# Vector Stores
+faiss-cpu>=1.7.4  # Use faiss-gpu if you have CUDA
+chromadb>=0.4.0
+
+# API Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# UI Framework
+streamlit>=1.28.0
+
+# Data Processing
+pypdf>=3.17.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Configuration & Settings
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+
+# Logging & Monitoring
+structlog>=23.2.0
+prometheus-client>=0.19.0
+
+# Evaluation
+ragas>=0.1.0
+
+# Utilities
+requests>=2.31.0
+tqdm>=4.66.0
