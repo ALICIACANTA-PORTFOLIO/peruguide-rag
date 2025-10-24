@@ -1,16 +1,17 @@
 """
-Retrieval Pipeline Module
+Retrieval Pipeline Module.
 
-Handles document retrieval and optional reranking.
+This module handles semantic document retrieval by combining embedding models
+with vector stores for similarity search.
 
 Components:
-    - retrievers: Dense and hybrid retrieval strategies
-    - rerankers: Cross-encoder reranking for precision
-
-Configuration:
-    - Top-K: 5 documents
-    - Threshold: 0.7 similarity score
-    - Metric: Cosine similarity
-
-Justification: Hands-On LLMs p.198 - "Top-k=5 balances precision/recall"
+- SemanticRetriever: Combines embedder + vector store for semantic search
+- (Future) HybridRetriever: Combines dense + sparse retrieval
+- (Future) Rerankers: Cross-encoder reranking for precision
 """
+
+from src.retrieval_pipeline.retrievers import SemanticRetriever
+
+__all__ = [
+    "SemanticRetriever",
+]
