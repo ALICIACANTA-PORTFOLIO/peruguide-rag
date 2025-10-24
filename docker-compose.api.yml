@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # PeruGuide RAG API Service
+  peruguide-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: peruguide-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+      # LLM API Keys (override with .env file)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY:-}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY:-}
+    volumes:
+      # Mount data directories
+      - ./data:/app/data
+      # Mount vector store persistence
+      - vector_data:/app/data/vector_stores
+    networks:
+      - peruguide-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  vector_data:
+    driver: local
+
+networks:
+  peruguide-network:
+    driver: bridge
