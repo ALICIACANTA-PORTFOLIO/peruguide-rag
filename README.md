@@ -167,6 +167,10 @@ python demo_simple.py
 
 # Interactive Streamlit app
 streamlit run app/streamlit_app.py
+
+# Optional: Set custom API URL
+# export API_URL=http://custom-api:8000  # Linux/Mac
+# $env:API_URL="http://custom-api:8000"  # Windows PowerShell
 ```
 
 **Expected Output:**
