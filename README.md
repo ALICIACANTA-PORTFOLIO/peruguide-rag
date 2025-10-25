@@ -1,12 +1,14 @@
 <div align="center">
 
-<img src="./assets/banner.svg" alt="PeruGuide AI Banner" width="100%">
+# 🇵🇪 PeruGuide AI
+
+### *Retrieval-Augmented Generation for Peru Tourism*
 
 ---
 
 **A production-ready RAG system transforming Peru's fragmented tourism documentation into an intelligent conversational assistant**
 
-**🇵🇪 From Tourist Information Chaos to AI-Powered Clarity**
+**From Tourist Information Chaos to AI-Powered Clarity**
 
 [🎯 Try Demo](#-installation) • [📖 Documentation](#-table-of-contents) • [🚀 Quick Start](#-installation) • [🏗️ Architecture](#-architecture)
 
@@ -140,13 +142,29 @@ This realization led to a fundamental question:
 
 ### **RAG System Flow: Query to Response**
 
-<div align="center">
+```mermaid
+graph LR
+    A[👤 User Query<br/>¿Qué hacer en Cusco<br/>en 3 días?] --> B[🧮 Sentence Transformer<br/>MiniLM-L12-v2<br/>384 dimensions]
+    B --> C[🔍 FAISS Vector DB<br/>10,247 chunks<br/>Similarity search k=5]
+    C --> D[📄 Retrieved Context<br/>Top-5 documents<br/>PDF + page citations]
+    D --> E[🔧 Prompt Engineering<br/>Context augmentation]
+    E --> F[🤖 GPT-4<br/>Temperature: 0.3<br/>Max tokens: 500]
+    F --> G[✨ Generated Answer<br/>with source citations]
+    G -.->|Response| A
+    
+    H[📚 Source Data<br/>19 PDFs<br/>2,959 pages] -.->|Indexed| C
+    
+    style A fill:#2d3561,stroke:#00d4ff,stroke-width:2px,color:#fff
+    style B fill:#4ecdc4,stroke:#4ecdc4,stroke-width:2px,color:#000
+    style C fill:#95e1d3,stroke:#95e1d3,stroke-width:2px,color:#000
+    style D fill:#3d4578,stroke:#ffd93d,stroke-width:2px,color:#fff
+    style E fill:#2d3561,stroke:#f38181,stroke-width:2px,color:#fff
+    style F fill:#f38181,stroke:#ff6b6b,stroke-width:2px,color:#000
+    style G fill:#ffd93d,stroke:#ffd93d,stroke-width:2px,color:#000
+    style H fill:#ff6b6b,stroke:#ff6b6b,stroke-width:2px,color:#fff
+```
 
-<img src="./assets/rag-flow-diagram.svg" alt="RAG Flow Diagram" width="100%">
-
-</div>
-
-El diagrama animado muestra el flujo completo de una consulta del usuario a través del sistema RAG:
+**Flujo del Sistema RAG:**
 
 1. **👤 User Query** → Usuario formula pregunta en lenguaje natural
 2. **🧮 Sentence Transformer** → Convierte texto a vector embeddings (384 dimensiones)
