@@ -104,6 +104,21 @@ models/
 # ============================================================================
 .dev-docs/
 deleteme/
+DEMO_SCRIPT.md
+FINAL_SUMMARY.md
+GITHUB_PUBLICATION_CHECKLIST.md
+PROYECTO_LISTO_RESUMEN.md
+ACTION_PLAN.md
+EXECUTIVE_SUMMARY.md
+INDEX.md
+PROJECT_PROPOSAL_ENHANCED.md
+TECHNICAL_BEST_PRACTICES.md
+VISUAL_ROADMAP.md
+*_actividad_*.ipynb
+NLP_LLM_*.ipynb
+00_analyze_reference_materials.ipynb
+analyze_books.py
+REFERENCES.md
 
 # ============================================================================
 # Books & PDFs (Copyright protected - cite only)
