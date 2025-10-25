@@ -1,6 +1,6 @@
 <div align="center">
 
-![PeruGuide AI Banner](./assets/banner.svg)
+<img src="./assets/banner.svg" alt="PeruGuide AI Banner" width="100%">
 
 ---
 
@@ -142,7 +142,7 @@ This realization led to a fundamental question:
 
 <div align="center">
 
-![RAG Flow Diagram](./assets/rag-flow-diagram.svg)
+<img src="./assets/rag-flow-diagram.svg" alt="RAG Flow Diagram" width="100%">
 
 </div>
 
@@ -792,8 +792,8 @@ PDFs are **not included** in this repository due to copyright. Users must obtain
 **Built with ❤️ for travelers exploring Peru**
 
 [![GitHub](https://img.shields.io/badge/GitHub-ALICIACANTA--PORTFOLIO-blue?logo=github)](https://github.com/ALICIACANTA-PORTFOLIO)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?logo=linkedin)](https://linkedin.com/in/yourprofile)
-[![Email](https://img.shields.io/badge/Email-Contact-red?logo=gmail)](mailto:your.email@example.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?logo=linkedin)](https://www.linkedin.com/in/alising-ai/)
+[![Email](https://img.shields.io/badge/Email-Contact-red?logo=gmail)](mailto:alicia.canta.exe@gmail.com)
 
 ⭐ **Star this repo** if you find it helpful! | 🐛 **Report Issues** | 💡 **Contribute**
 
