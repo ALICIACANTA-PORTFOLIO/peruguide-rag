@@ -1,0 +1,168 @@
+<svg viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="900" height="700" fill="url(#bgGradient)"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#00d4ff" font-family="Arial, sans-serif">
+    PeruGuide AI - RAG Pipeline Architecture
+  </text>
+  
+  <!-- Pipeline 1: Feature Pipeline -->
+  <g id="feature-pipeline">
+    <rect x="50" y="80" width="250" height="150" rx="15" fill="#e74c3c" opacity="0.9" filter="url(#shadow)"/>
+    <text x="175" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+      📄 Feature Pipeline
+    </text>
+    <text x="175" y="140" text-anchor="middle" font-size="13" fill="white">
+      • PDF Processing (PyMuPDF)
+    </text>
+    <text x="175" y="165" text-anchor="middle" font-size="13" fill="white">
+      • Text Cleaning (Regex)
+    </text>
+    <text x="175" y="190" text-anchor="middle" font-size="13" fill="white">
+      • Chunking (RecursiveSplitter)
+    </text>
+    <text x="175" y="215" text-anchor="middle" font-size="13" fill="white">
+      • 384-dim Embeddings (MiniLM)
+    </text>
+  </g>
+  
+  <!-- Arrow 1 -->
+  <path d="M 300 155 L 330 155" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Pipeline 2: Training Pipeline -->
+  <g id="training-pipeline">
+    <rect x="330" y="80" width="250" height="150" rx="15" fill="#3498db" opacity="0.9" filter="url(#shadow)"/>
+    <text x="455" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+      🧠 Training Pipeline
+    </text>
+    <text x="455" y="140" text-anchor="middle" font-size="13" fill="white">
+      • FAISS Vector Store
+    </text>
+    <text x="455" y="165" text-anchor="middle" font-size="13" fill="white">
+      • IndexFlatL2 (L2 distance)
+    </text>
+    <text x="455" y="190" text-anchor="middle" font-size="13" fill="white">
+      • 10,000+ indexed chunks
+    </text>
+    <text x="455" y="215" text-anchor="middle" font-size="13" fill="white">
+      • Metadata storage
+    </text>
+  </g>
+  
+  <!-- Arrow 2 -->
+  <path d="M 580 155 L 610 155" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Pipeline 3: Inference Pipeline -->
+  <g id="inference-pipeline">
+    <rect x="610" y="80" width="250" height="150" rx="15" fill="#2ecc71" opacity="0.9" filter="url(#shadow)"/>
+    <text x="735" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+      💬 Inference Pipeline
+    </text>
+    <text x="735" y="140" text-anchor="middle" font-size="13" fill="white">
+      • Semantic Retriever (k=3)
+    </text>
+    <text x="735" y="165" text-anchor="middle" font-size="13" fill="white">
+      • LLM (GPT-3.5-turbo)
+    </text>
+    <text x="735" y="190" text-anchor="middle" font-size="13" fill="white">
+      • Answer Generation
+    </text>
+    <text x="735" y="215" text-anchor="middle" font-size="13" fill="white">
+      • Source Citations
+    </text>
+  </g>
+  
+  <!-- Data Flow Layers -->
+  <g id="data-layer">
+    <rect x="50" y="270" width="810" height="100" rx="10" fill="#34495e" opacity="0.8" filter="url(#shadow)"/>
+    <text x="455" y="295" text-anchor="middle" font-size="16" font-weight="bold" fill="#00d4ff">
+      📊 Data Layer
+    </text>
+    <text x="150" y="325" text-anchor="middle" font-size="12" fill="white">
+      Raw PDFs
+    </text>
+    <text x="300" y="325" text-anchor="middle" font-size="12" fill="white">
+      Cleaned Chunks
+    </text>
+    <text x="455" y="325" text-anchor="middle" font-size="12" fill="white">
+      Vector Embeddings
+    </text>
+    <text x="610" y="325" text-anchor="middle" font-size="12" fill="white">
+      FAISS Index
+    </text>
+    <text x="760" y="325" text-anchor="middle" font-size="12" fill="white">
+      Answers + Citations
+    </text>
+    
+    <!-- Data flow arrows -->
+    <path d="M 200 315 L 250 315" stroke="#95a5a6" stroke-width="2" fill="none" marker-end="url(#arrowheadGray)"/>
+    <path d="M 350 315 L 400 315" stroke="#95a5a6" stroke-width="2" fill="none" marker-end="url(#arrowheadGray)"/>
+    <path d="M 505 315 L 555 315" stroke="#95a5a6" stroke-width="2" fill="none" marker-end="url(#arrowheadGray)"/>
+    <path d="M 655 315 L 705 315" stroke="#95a5a6" stroke-width="2" fill="none" marker-end="url(#arrowheadGray)"/>
+  </g>
+  
+  <!-- Technology Stack -->
+  <g id="tech-stack">
+    <rect x="50" y="410" width="250" height="250" rx="10" fill="#9b59b6" opacity="0.85" filter="url(#shadow)"/>
+    <text x="175" y="440" text-anchor="middle" font-size="16" font-weight="bold" fill="white">
+      🛠️ Core Technologies
+    </text>
+    <text x="90" y="470" font-size="12" fill="white">• Python 3.10+</text>
+    <text x="90" y="495" font-size="12" fill="white">• LangChain 0.1+</text>
+    <text x="90" y="520" font-size="12" fill="white">• SentenceTransformers</text>
+    <text x="90" y="545" font-size="12" fill="white">• FAISS (Meta AI)</text>
+    <text x="90" y="570" font-size="12" fill="white">• OpenAI GPT-3.5</text>
+    <text x="90" y="595" font-size="12" fill="white">• Streamlit</text>
+    <text x="90" y="620" font-size="12" fill="white">• Docker</text>
+    <text x="90" y="645" font-size="12" fill="white">• RAGAS (Evaluation)</text>
+  </g>
+  
+  <!-- Evaluation Metrics -->
+  <g id="metrics">
+    <rect x="330" y="410" width="250" height="250" rx="10" fill="#e67e22" opacity="0.85" filter="url(#shadow)"/>
+    <text x="455" y="440" text-anchor="middle" font-size="16" font-weight="bold" fill="white">
+      📊 Quality Metrics
+    </text>
+    <text x="360" y="475" font-size="13" fill="white">✅ Faithfulness: 0.89</text>
+    <text x="360" y="505" font-size="13" fill="white">✅ Answer Relevancy: 0.87</text>
+    <text x="360" y="535" font-size="13" fill="white">✅ Context Precision: 0.85</text>
+    <text x="360" y="565" font-size="13" fill="white">✅ Context Recall: 0.83</text>
+    <text x="360" y="595" font-size="13" fill="white">⚡ Avg Response: 2.3s</text>
+    <text x="360" y="625" font-size="13" fill="white">📄 Chunks Indexed: 10,247</text>
+  </g>
+  
+  <!-- Production Features -->
+  <g id="production">
+    <rect x="610" y="410" width="250" height="250" rx="10" fill="#16a085" opacity="0.85" filter="url(#shadow)"/>
+    <text x="735" y="440" text-anchor="middle" font-size="16" font-weight="bold" fill="white">
+      🚀 Production-Ready
+    </text>
+    <text x="640" y="475" font-size="13" fill="white">🐳 Docker Compose</text>
+    <text x="640" y="505" font-size="13" fill="white">🔄 CI/CD Pipeline</text>
+    <text x="640" y="535" font-size="13" fill="white">📝 Structured Logging</text>
+    <text x="640" y="565" font-size="13" fill="white">📊 Prometheus Metrics</text>
+    <text x="640" y="595" font-size="13" fill="white">🧪 Test Coverage >75%</text>
+    <text x="640" y="625" font-size="13" fill="white">📚 MkDocs Docs</text>
+  </g>
+  
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#00d4ff" />
+    </marker>
+    <marker id="arrowheadGray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#95a5a6" />
+    </marker>
+  </defs>
+</svg>

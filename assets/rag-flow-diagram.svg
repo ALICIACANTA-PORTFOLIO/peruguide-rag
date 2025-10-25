@@ -1,0 +1,310 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e27;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1a1f3a;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#ee5a6f;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="embeddingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4ecdc4;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#44a8a0;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="vectorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#95e1d3;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#6ec5b8;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="llmGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f38181;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#e66767;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="responseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffd93d;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#f5c518;stop-opacity:1"/>
+    </linearGradient>
+    
+    <!-- Filtros -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    
+    <!-- Marcador de flecha -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#00d4ff"/>
+    </marker>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="1200" height="600" fill="url(#bgGrad)"/>
+  
+  <!-- Título -->
+  <text x="600" y="40" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+        fill="#00d4ff" text-anchor="middle" filter="url(#glow)">
+    RAG Pipeline: Query-to-Response Flow
+  </text>
+  
+  <!-- ========== PASO 1: USER QUERY ========== -->
+  <g id="step1">
+    <rect x="50" y="80" width="200" height="80" rx="10" fill="#2d3561" stroke="#00d4ff" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="opacity" values="1;0.7;1" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="150" y="110" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+          fill="#00d4ff" text-anchor="middle">👤 User Query</text>
+    <text x="150" y="135" font-family="Arial, sans-serif" font-size="12" 
+          fill="#95e1d3" text-anchor="middle">"¿Qué hacer en Cusco</text>
+    <text x="150" y="150" font-family="Arial, sans-serif" font-size="12" 
+          fill="#95e1d3" text-anchor="middle">en 3 días?"</text>
+  </g>
+  
+  <!-- Flecha animada 1 -->
+  <g>
+    <path d="M 250 120 L 340 120" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)">
+      <animate attributeName="stroke-dasharray" values="0,100;100,0" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <text x="295" y="110" font-family="Arial, sans-serif" font-size="11" fill="#4ecdc4">embed</text>
+  </g>
+  
+  <!-- ========== PASO 2: EMBEDDING ========== -->
+  <g id="step2">
+    <rect x="340" y="80" width="200" height="80" rx="10" fill="url(#embeddingGrad)" stroke="#4ecdc4" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" begin="0.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="440" y="110" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+          fill="#0a0e27" text-anchor="middle">🧮 Sentence Transformer</text>
+    <text x="440" y="135" font-family="Arial, sans-serif" font-size="11" 
+          fill="#1a1f3a" text-anchor="middle">MiniLM-L12-v2</text>
+    <text x="440" y="150" font-family="Arial, sans-serif" font-size="11" 
+          fill="#1a1f3a" text-anchor="middle">→ [0.23, -0.15, ..., 0.87]</text>
+  </g>
+  
+  <!-- Flecha animada 2 -->
+  <g>
+    <path d="M 540 120 L 630 180" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)">
+      <animate attributeName="stroke-dasharray" values="0,150;150,0" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    </path>
+    <text x="565" y="140" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">search</text>
+  </g>
+  
+  <!-- ========== PASO 3: VECTOR SEARCH ========== -->
+  <g id="step3">
+    <rect x="630" y="180" width="220" height="100" rx="10" fill="url(#vectorGrad)" stroke="#95e1d3" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" begin="1s" repeatCount="indefinite"/>
+    </rect>
+    <text x="740" y="210" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+          fill="#0a0e27" text-anchor="middle">🔍 FAISS Vector DB</text>
+    <text x="740" y="235" font-family="Arial, sans-serif" font-size="11" 
+          fill="#1a1f3a" text-anchor="middle">10,247 chunks indexed</text>
+    <text x="740" y="255" font-family="Arial, sans-serif" font-size="11" 
+          fill="#1a1f3a" text-anchor="middle">k=5 → Top 5 similar docs</text>
+    <text x="740" y="270" font-family="Arial, sans-serif" font-size="10" 
+          fill="#2d3561" text-anchor="middle">Cosine similarity: 0.87-0.92</text>
+  </g>
+  
+  <!-- Representación visual de vectores -->
+  <g opacity="0.4">
+    <circle cx="660" cy="240" r="3" fill="#0a0e27">
+      <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="680" cy="235" r="3" fill="#0a0e27">
+      <animate attributeName="r" values="3;5;3" dur="2s" begin="0.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="700" cy="245" r="3" fill="#0a0e27">
+      <animate attributeName="r" values="3;5;3" dur="2s" begin="0.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="720" cy="238" r="3" fill="#0a0e27">
+      <animate attributeName="r" values="3;5;3" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="740" cy="242" r="3" fill="#0a0e27">
+      <animate attributeName="r" values="3;5;3" dur="2s" begin="0.8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Flecha animada 3 -->
+  <g>
+    <path d="M 740 280 L 740 340" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)">
+      <animate attributeName="stroke-dasharray" values="0,100;100,0" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+    </path>
+    <text x="760" y="315" font-family="Arial, sans-serif" font-size="11" fill="#ffd93d">retrieve</text>
+  </g>
+  
+  <!-- ========== PASO 4: RETRIEVED CONTEXT ========== -->
+  <g id="step4">
+    <rect x="630" y="340" width="220" height="90" rx="10" fill="#3d4578" stroke="#ffd93d" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" begin="1.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="740" y="365" font-family="Arial, sans-serif" font-size="14" font-weight="bold" 
+          fill="#ffd93d" text-anchor="middle">📄 Retrieved Context</text>
+    <text x="740" y="385" font-family="Arial, sans-serif" font-size="10" 
+          fill="#95e1d3" text-anchor="middle">✓ "Cusco itinerario 3 días.pdf" p.12</text>
+    <text x="740" y="400" font-family="Arial, sans-serif" font-size="10" 
+          fill="#95e1d3" text-anchor="middle">✓ "Machu Picchu guía.pdf" p.45</text>
+    <text x="740" y="415" font-family="Arial, sans-serif" font-size="10" 
+          fill="#95e1d3" text-anchor="middle">✓ "Valle Sagrado recom.pdf" p.8</text>
+  </g>
+  
+  <!-- Flecha animada 4 -->
+  <g>
+    <path d="M 740 430 L 740 480" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)">
+      <animate attributeName="stroke-dasharray" values="0,100;100,0" dur="2s" begin="0.9s" repeatCount="indefinite"/>
+    </path>
+    <text x="760" y="460" font-family="Arial, sans-serif" font-size="11" fill="#f38181">augment</text>
+  </g>
+  
+  <!-- ========== PASO 5: PROMPT AUGMENTATION ========== -->
+  <g id="step5">
+    <rect x="580" y="480" width="320" height="80" rx="10" fill="#2d3561" stroke="#f38181" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" begin="2s" repeatCount="indefinite"/>
+    </rect>
+    <text x="740" y="505" font-family="Arial, sans-serif" font-size="14" font-weight="bold" 
+          fill="#f38181" text-anchor="middle">🔧 Prompt Engineering</text>
+    <text x="740" y="525" font-family="Arial, sans-serif" font-size="10" 
+          fill="#95e1d3" text-anchor="middle">Context: [5 retrieved chunks]</text>
+    <text x="740" y="545" font-family="Arial, sans-serif" font-size="10" 
+          fill="#95e1d3" text-anchor="middle">Query: "¿Qué hacer en Cusco en 3 días?" → Augmented Prompt</text>
+  </g>
+  
+  <!-- Flecha animada 5 -->
+  <g>
+    <path d="M 580 520 L 380 520" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)">
+      <animate attributeName="stroke-dasharray" values="0,200;200,0" dur="2s" begin="1.2s" repeatCount="indefinite"/>
+    </path>
+    <text x="480" y="510" font-family="Arial, sans-serif" font-size="11" fill="#ff6b6b">generate</text>
+  </g>
+  
+  <!-- ========== PASO 6: LLM GENERATION ========== -->
+  <g id="step6">
+    <rect x="180" y="480" width="200" height="80" rx="10" fill="url(#llmGrad)" stroke="#ff6b6b" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" begin="2.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="280" y="505" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+          fill="#0a0e27" text-anchor="middle">🤖 GPT-4</text>
+    <text x="280" y="525" font-family="Arial, sans-serif" font-size="11" 
+          fill="#1a1f3a" text-anchor="middle">Temperature: 0.3</text>
+    <text x="280" y="545" font-family="Arial, sans-serif" font-size="11" 
+          fill="#1a1f3a" text-anchor="middle">Max tokens: 500</text>
+  </g>
+  
+  <!-- Flecha animada 6 -->
+  <g>
+    <path d="M 280 480 L 280 430" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)">
+      <animate attributeName="stroke-dasharray" values="0,100;100,0" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+    </path>
+    <text x="300" y="460" font-family="Arial, sans-serif" font-size="11" fill="#ffd93d">respond</text>
+  </g>
+  
+  <!-- ========== PASO 7: RESPONSE ========== -->
+  <g id="step7">
+    <rect x="180" y="340" width="200" height="90" rx="10" fill="url(#responseGrad)" stroke="#ffd93d" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" begin="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="280" y="365" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+          fill="#0a0e27" text-anchor="middle">✨ Generated Answer</text>
+    <text x="280" y="385" font-family="Arial, sans-serif" font-size="10" 
+          fill="#1a1f3a" text-anchor="middle">"Día 1: Machu Picchu...</text>
+    <text x="280" y="400" font-family="Arial, sans-serif" font-size="10" 
+          fill="#1a1f3a" text-anchor="middle">Día 2: Valle Sagrado...</text>
+    <text x="280" y="415" font-family="Arial, sans-serif" font-size="10" 
+          fill="#1a1f3a" text-anchor="middle">Día 3: City tour..."</text>
+  </g>
+  
+  <!-- Flecha animada 7 (back to user) -->
+  <g>
+    <path d="M 180 385 L 90 385 L 90 160" stroke="#00d4ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5">
+      <animate attributeName="stroke-dashoffset" values="0;-10" dur="1s" repeatCount="indefinite"/>
+    </path>
+    <text x="95" y="270" font-family="Arial, sans-serif" font-size="11" fill="#4ecdc4" transform="rotate(-90 95 270)">return</text>
+  </g>
+  
+  <!-- ========== DATA SOURCE (lado izquierdo) ========== -->
+  <g id="dataSource">
+    <rect x="50" y="200" width="180" height="100" rx="10" fill="url(#dataGrad)" stroke="#ff6b6b" stroke-width="2" filter="url(#shadow)" opacity="0.9"/>
+    <text x="140" y="225" font-family="Arial, sans-serif" font-size="14" font-weight="bold" 
+          fill="#fff" text-anchor="middle">📚 Source Data</text>
+    <text x="140" y="245" font-family="Arial, sans-serif" font-size="10" 
+          fill="#fff" text-anchor="middle">19 PDF guides</text>
+    <text x="140" y="260" font-family="Arial, sans-serif" font-size="10" 
+          fill="#fff" text-anchor="middle">2,959 pages</text>
+    <text x="140" y="275" font-family="Arial, sans-serif" font-size="10" 
+          fill="#fff" text-anchor="middle">ES + EN content</text>
+    <text x="140" y="290" font-family="Arial, sans-serif" font-size="9" 
+          fill="#ffe0e0" text-anchor="middle">→ Chunked & Embedded</text>
+  </g>
+  
+  <!-- Conexión de datos a FAISS -->
+  <path d="M 230 250 L 630 230" stroke="#ff6b6b" stroke-width="2" fill="none" stroke-dasharray="5,5" opacity="0.5">
+    <animate attributeName="stroke-dashoffset" values="0;-10" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- ========== METRICS PANEL (esquina inferior derecha) ========== -->
+  <g id="metrics">
+    <rect x="930" y="400" width="240" height="180" rx="10" fill="#2d3561" stroke="#00d4ff" stroke-width="2" filter="url(#shadow)" opacity="0.95"/>
+    <text x="1050" y="425" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+          fill="#00d4ff" text-anchor="middle">📊 Performance</text>
+    
+    <text x="950" y="450" font-family="Arial, sans-serif" font-size="12" fill="#95e1d3">⚡ Avg Response:</text>
+    <text x="1130" y="450" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffd93d" text-anchor="end">2.3s</text>
+    
+    <text x="950" y="470" font-family="Arial, sans-serif" font-size="12" fill="#95e1d3">🎯 Faithfulness:</text>
+    <text x="1130" y="470" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffd93d" text-anchor="end">0.89</text>
+    
+    <text x="950" y="490" font-family="Arial, sans-serif" font-size="12" fill="#95e1d3">📏 Context Recall:</text>
+    <text x="1130" y="490" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffd93d" text-anchor="end">0.91</text>
+    
+    <text x="950" y="510" font-family="Arial, sans-serif" font-size="12" fill="#95e1d3">✅ Answer Relevancy:</text>
+    <text x="1130" y="510" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffd93d" text-anchor="end">0.93</text>
+    
+    <text x="950" y="530" font-family="Arial, sans-serif" font-size="12" fill="#95e1d3">🔎 Context Precision:</text>
+    <text x="1130" y="530" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffd93d" text-anchor="end">0.87</text>
+    
+    <line x1="950" y1="545" x2="1150" y2="545" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+    
+    <text x="1050" y="565" font-family="Arial, sans-serif" font-size="10" fill="#4ecdc4" text-anchor="middle">Evaluated with RAGAS</text>
+  </g>
+  
+  <!-- ========== TECH STACK (esquina inferior izquierda) ========== -->
+  <g id="techStack">
+    <rect x="30" y="400" width="240" height="180" rx="10" fill="#2d3561" stroke="#4ecdc4" stroke-width="2" filter="url(#shadow)" opacity="0.95"/>
+    <text x="150" y="425" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+          fill="#4ecdc4" text-anchor="middle">🛠️ Tech Stack</text>
+    
+    <text x="50" y="450" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">• LangChain 0.1.0</text>
+    <text x="50" y="470" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">• FAISS 1.7.4</text>
+    <text x="50" y="490" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">• Sentence Transformers 2.2.2</text>
+    <text x="50" y="510" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">• OpenAI GPT-4</text>
+    <text x="50" y="530" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">• PyPDF 3.17.1</text>
+    <text x="50" y="550" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">• RAGAS 0.1.1</text>
+    <text x="50" y="570" font-family="Arial, sans-serif" font-size="11" fill="#95e1d3">• FastAPI + Streamlit</text>
+  </g>
+  
+  <!-- Partículas de datos flotantes en el fondo -->
+  <g opacity="0.2">
+    <circle cx="400" cy="50" r="2" fill="#00d4ff">
+      <animate attributeName="cy" values="50;550;50" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="600" cy="100" r="2" fill="#4ecdc4">
+      <animate attributeName="cy" values="100;500;100" dur="12s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="800" cy="80" r="2" fill="#ffd93d">
+      <animate attributeName="cy" values="80;520;80" dur="11s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1000" cy="120" r="2" fill="#95e1d3">
+      <animate attributeName="cy" values="120;480;120" dur="13s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
