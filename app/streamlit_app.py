@@ -3,6 +3,7 @@ PeruGuide AI - Streamlit Frontend
 Interactive web interface for Peru travel information using RAG
 """
 
+import os
 import streamlit as st
 import requests
 import time
@@ -56,7 +57,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # API Configuration
-API_URL = st.secrets.get("API_URL", "http://localhost:8000")
+API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 
 def check_api_health() -> Dict[str, Any]:

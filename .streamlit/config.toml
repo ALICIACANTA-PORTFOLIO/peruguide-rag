@@ -1,0 +1,21 @@
+[server]
+# Enable XSRF protection (recommended for production)
+enableXsrfProtection = true
+
+# Enable CORS for development (disable in production)
+enableCORS = false
+
+# Server address
+address = "0.0.0.0"
+port = 8501
+
+[browser]
+# Automatically open browser
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#00d4ff"
+backgroundColor = "#0a0e27"
+secondaryBackgroundColor = "#1a1f3a"
+textColor = "#ffffff"
+font = "sans serif"
