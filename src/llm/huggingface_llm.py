@@ -67,12 +67,14 @@ class HuggingFaceLLM(BaseLLM):
     
     def _validate_config(self) -> None:
         """Validate Hugging Face configuration."""
-        # Check for API token
+        # API token is optional for public models via Inference API
+        # Only warn if not provided
         api_key = self.config.api_key or os.getenv("HUGGINGFACE_API_TOKEN") or os.getenv("HF_TOKEN")
         if not api_key:
-            raise ValueError(
-                "Hugging Face API token is required. Set config.api_key or "
-                "HUGGINGFACE_API_TOKEN/HF_TOKEN environment variable."
+            log.warning(
+                "huggingface_no_token",
+                message="No HuggingFace token provided. Using public Inference API with rate limits. "
+                        "For better performance, set HUGGINGFACE_API_TOKEN environment variable."
             )
     
     def _initialize_client(self) -> None:
@@ -106,52 +108,6 @@ class HuggingFaceLLM(BaseLLM):
                 model=self.config.model
             )
     
-    def _format_messages_for_hf(self, messages: List[Message]) -> str:
-        """
-        Format messages for Hugging Face models.
-        
-        Most HF models expect a simple text prompt, not chat messages.
-        This method converts chat messages to a single prompt string.
-        
-        Args:
-            messages: List of Message objects
-            
-        Returns:
-            Formatted prompt string
-        """
-        # Check if model supports chat format (e.g., Llama-2-chat, Mistral-Instruct)
-        model_lower = self.config.model.lower()
-        is_chat_model = any(x in model_lower for x in ["chat", "instruct", "assistant"])
-        
-        if is_chat_model and "llama-2" in model_lower:
-            # Llama-2-chat format
-            prompt_parts = []
-            for msg in messages:
-                if msg.role == "system":
-                    prompt_parts.append(f"<<SYS>>\n{msg.content}\n<</SYS>>\n")
-                elif msg.role == "user":
-                    prompt_parts.append(f"[INST] {msg.content} [/INST]")
-                elif msg.role == "assistant":
-                    prompt_parts.append(f"{msg.content}")
-            return "\n".join(prompt_parts)
-        
-        elif is_chat_model:
-            # Generic chat format
-            prompt_parts = []
-            for msg in messages:
-                if msg.role == "system":
-                    prompt_parts.append(f"System: {msg.content}")
-                elif msg.role == "user":
-                    prompt_parts.append(f"User: {msg.content}")
-                elif msg.role == "assistant":
-                    prompt_parts.append(f"Assistant: {msg.content}")
-            prompt_parts.append("Assistant:")  # Prompt for response
-            return "\n\n".join(prompt_parts)
-        
-        else:
-            # Simple concatenation for non-chat models
-            return "\n".join(msg.content for msg in messages)
-    
     def generate(
         self,
         messages: Union[List[Dict[str, str]], List[Message]],
@@ -173,15 +129,14 @@ class HuggingFaceLLM(BaseLLM):
         normalized = self._normalize_messages(messages)
         self._validate_messages(normalized)
         
-        # Format messages to prompt
-        prompt = self._format_messages_for_hf(normalized)
+        # Convert to chat format for conversational models
+        chat_messages = [{"role": msg.role, "content": msg.content} for msg in normalized]
         
         # Prepare generation parameters
         params = {
-            "max_new_tokens": kwargs.get("max_tokens", self.config.max_tokens),
+            "max_tokens": kwargs.get("max_tokens", self.config.max_tokens),
             "temperature": kwargs.get("temperature", self.config.temperature),
             "top_p": kwargs.get("top_p", self.config.top_p),
-            "do_sample": True if self.config.temperature > 0 else False,
         }
         
         # Add any extra parameters from config
@@ -190,43 +145,55 @@ class HuggingFaceLLM(BaseLLM):
         log.info(
             "huggingface_generate_started",
             model=self.config.model,
-            prompt_length=len(prompt),
+            num_messages=len(chat_messages),
             params=params,
         )
         
         start_time = time.time()
         
         try:
-            # Call Hugging Face inference
-            response = self._client.text_generation(
-                prompt,
+            # Use chat_completion for conversational models (Mistral, etc.)
+            response = self._client.chat_completion(
+                messages=chat_messages,
                 **params,
-                return_full_text=False,
             )
             
             latency_ms = int((time.time() - start_time) * 1000)
             
-            # Extract text from response
-            if isinstance(response, str):
-                content = response
+            # Extract content from chat completion response
+            # Response structure: ChatCompletionOutput with .choices[0].message.content
+            content = response.choices[0].message.content
+            finish_reason = getattr(response.choices[0], 'finish_reason', 'stop')
+            
+            # Extract usage if available
+            usage = {}
+            if hasattr(response, 'usage') and response.usage:
+                usage = {
+                    "prompt_tokens": response.usage.prompt_tokens,
+                    "completion_tokens": response.usage.completion_tokens,
+                    "total_tokens": response.usage.total_tokens,
+                }
             else:
-                content = response.get("generated_text", str(response))
+                # Fallback token counting
+                total_prompt_text = " ".join([msg.content for msg in normalized])
+                usage = {
+                    "prompt_tokens": self.count_tokens(total_prompt_text),
+                    "completion_tokens": self.count_tokens(content),
+                    "total_tokens": self.count_tokens(total_prompt_text) + self.count_tokens(content),
+                }
             
             log.info(
                 "huggingface_generate_completed",
                 latency_ms=latency_ms,
                 response_length=len(content),
+                finish_reason=finish_reason,
             )
             
             return LLMResponse(
                 content=content,
                 model=self.config.model,
-                finish_reason="stop",  # HF doesn't provide finish reason
-                usage={
-                    "prompt_tokens": self.count_tokens(prompt),
-                    "completion_tokens": self.count_tokens(content),
-                    "total_tokens": self.count_tokens(prompt) + self.count_tokens(content),
-                },
+                finish_reason=finish_reason,
+                usage=usage,
                 latency_ms=latency_ms,
                 metadata={
                     "endpoint": self.config.endpoint_url,

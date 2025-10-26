@@ -36,15 +36,18 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
     Raises:
         HTTPException: If query processing fails
     """
+    # Log immediately when request arrives
     logger.info(
-        "query_received",
-        query_preview=request.query[:50],
+        "query_endpoint_called",
+        query_preview=request.query[:50] if len(request.query) > 50 else request.query,
         top_k=request.top_k,
-        llm_model=request.llm_model
+        llm_model=request.llm_model,
+        include_metadata=request.include_metadata
     )
     
     try:
         # Get answer generator with specified parameters
+        logger.info("getting_answer_generator", llm_model=request.llm_model)
         generator = get_answer_generator(
             llm_model=request.llm_model,
             top_k=request.top_k,
@@ -65,11 +68,18 @@ async def query_rag(request: QueryRequest) -> QueryResponse:
             latency_ms=response.latency_ms
         )
         
+        # Extract source metadata from sources
+        source_metadata = []
+        if request.include_metadata and response.sources:
+            for source in response.sources:
+                if isinstance(source, dict) and 'metadata' in source:
+                    source_metadata.append(source['metadata'])
+        
         # Build API response
         api_response = QueryResponse(
             answer=response.answer,
-            sources=response.sources,
-            metadata=response.metadata if request.include_metadata else None,
+            sources=[s.get('id', str(s)) if isinstance(s, dict) else str(s) for s in response.sources],
+            metadata=source_metadata if source_metadata else None,
             latency_ms=response.latency_ms,
             retrieval_latency_ms=getattr(response, 'retrieval_latency_ms', None),
             generation_latency_ms=getattr(response, 'generation_latency_ms', None)

@@ -6,6 +6,10 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import structlog
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 from src.api.routes import query, health, models
 from src.api.dependencies import get_vector_store, get_embedder
@@ -28,7 +32,7 @@ async def lifespan(app: FastAPI):
         logger.info(
             "components_initialized",
             embedder_dim=embedder.get_dimension(),
-            num_vectors=vector_store.num_vectors
+            num_vectors=vector_store.index.ntotal
         )
     except Exception as e:
         logger.error("component_initialization_failed", error=str(e))
@@ -49,13 +53,17 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
+# CORS middleware - configured from environment
+import os
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:8501,http://localhost:3000").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Restrict in production
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # Include routers

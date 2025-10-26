@@ -171,7 +171,14 @@ class HuggingFaceConfig(LLMConfig):
     def __post_init__(self):
         """Validate Hugging Face-specific configuration."""
         if self.model is None:
-            self.model = "meta-llama/Llama-2-7b-chat-hf"
+            # Using HuggingFace Hub's Serverless Inference API
+            # Try Mistral-7B-Instruct-v0.2 - known to work with free tier
+            self.model = "mistralai/Mistral-7B-Instruct-v0.2"
+        
+        # Auto-load API token from environment if not provided
+        if self.api_key is None:
+            import os
+            self.api_key = os.getenv("HUGGINGFACE_API_TOKEN") or os.getenv("HF_TOKEN")
 
 
 @dataclass

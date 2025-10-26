@@ -1,21 +1,24 @@
 [server]
-# Enable XSRF protection (recommended for production)
-enableXsrfProtection = true
+# Disable XSRF protection for development (enable for production)
+enableXsrfProtection = false
 
-# Enable CORS for development (disable in production)
-enableCORS = false
+# Enable CORS for development
+enableCORS = true
 
 # Server address
-address = "0.0.0.0"
+address = "localhost"
 port = 8501
+
+# Headless mode (set to true for production)
+headless = false
 
 [browser]
 # Automatically open browser
 gatherUsageStats = false
 
 [theme]
-primaryColor = "#00d4ff"
-backgroundColor = "#0a0e27"
-secondaryBackgroundColor = "#1a1f3a"
-textColor = "#ffffff"
-font = "sans serif"
+primaryColor = '#00d4ff'
+backgroundColor = '#0a0e27'
+secondaryBackgroundColor = '#1a1f3a'
+textColor = '#ffffff'
+font = 'sans serif'

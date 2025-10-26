@@ -3,18 +3,26 @@
 
 [server]
 # Server configuration
-address = "0.0.0.0"
+address = "localhost"
 port = 8501
-enableXsrfProtection = true
-enableCORS = false
+
+# For development: disable XSRF, enable CORS
+enableXsrfProtection = false
+enableCORS = true
+
+# For production: enable XSRF, CORS will auto-enable
+# enableXsrfProtection = true
+# address = "0.0.0.0"
+
+headless = false
 
 [browser]
 gatherUsageStats = false
 
 [theme]
 # PeruGuide AI theme colors
-primaryColor = "#00d4ff"
-backgroundColor = "#0a0e27"
-secondaryBackgroundColor = "#1a1f3a"
-textColor = "#ffffff"
-font = "sans serif"
+primaryColor = '#00d4ff'
+backgroundColor = '#0a0e27'
+secondaryBackgroundColor = '#1a1f3a'
+textColor = '#ffffff'
+font = 'sans serif'

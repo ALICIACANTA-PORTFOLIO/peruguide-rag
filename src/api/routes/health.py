@@ -42,7 +42,7 @@ async def health_check() -> HealthResponse:
         # Check vector store
         vector_store = get_vector_store()
         components["vector_store"] = "healthy" if vector_store else "unhealthy"
-        components["num_vectors"] = str(vector_store.num_vectors)
+        components["num_vectors"] = str(vector_store.index.ntotal)
     except Exception as e:
         logger.warning("vector_store_check_failed", error=str(e))
         components["vector_store"] = "unhealthy"
