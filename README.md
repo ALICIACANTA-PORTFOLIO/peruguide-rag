@@ -226,57 +226,250 @@ Following **"LLM Engineer's Handbook"** (Iusztin & Labonne, Chapter 1), the syst
 
 ### **Prerequisites**
 
-- Python 3.10+
-- Docker & Docker Compose (optional)
-- OpenAI API key (for LLM features)
-- 4GB RAM minimum
+- **Python 3.10+** ([Download](https://www.python.org/downloads/))
+- **FREE HuggingFace account** ([Sign up](https://huggingface.co/join)) - No credit card required!
+- **4GB RAM minimum** (for embeddings model)
 
-### **Quick Start (5 minutes)**
+### **Quick Start (15 minutes)**
+
+#### **Step 1: Clone Repository**
 
 ```bash
-# 1. Clone repository
 git clone https://github.com/ALICIACANTA-PORTFOLIO/peruguide-rag.git
 cd peruguide-rag
+```
 
-# 2. Create virtual environment
+#### **Step 2: Run Automated Setup**
+
+```bash
+# This validates your environment automatically
+python scripts/setup.py
+```
+
+**Expected output:**
+```
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║       🇵🇪  P E R U G U I D E   A I   S E T U P  🇵🇪       ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+✓ Python 3.10+ detected
+✓ Directories created
+✓ .env configuration validated
+✓ HuggingFace token configured
+✓ Found 36 PDF files
+✓ FAISS index found (17.8 MB, 5,729 vectors)
+
+✅ Setup complete! Ready to run.
+```
+
+#### **Step 3: Create Environment**
+
+```bash
+# Create conda environment (recommended)
 conda create -n peruguide-rag python=3.10 -y
 conda activate peruguide-rag
 
-# 3. Install dependencies
+# Install dependencies
 pip install -r requirements.txt
-
-# 4. Set up environment variables
-echo "OPENAI_API_KEY=your-key-here" > .env
-
-# 5. Run interactive demo
-python demo_simple.py
 ```
 
-### **Docker Deployment**
+#### **Step 4: Configure HuggingFace Token (FREE)**
 
 ```bash
-# Build and run with Docker Compose
-docker-compose up -d
+# 1. Get your FREE token from: https://huggingface.co/settings/tokens
+# 2. Copy .env.example to .env
+cp .env.example .env
 
-# Access Streamlit interface
-open http://localhost:8501
+# 3. Edit .env and add your token:
+# HUGGINGFACE_API_TOKEN=hf_your_token_here
 ```
+
+<details>
+<summary><b>📋 Complete .env Configuration</b> — Click to expand</summary>
+
+```bash
+# ============================================================================
+# HUGGINGFACE CONFIGURATION (FREE TIER - NO CREDIT CARD)
+# ============================================================================
+HUGGINGFACE_API_TOKEN=hf_your_token_here
+
+# LLM Settings
+LLM_DEFAULT_PROVIDER=huggingface
+LLM_MODEL_NAME=mistralai/Mistral-7B-Instruct-v0.2
+LLM_TEMPERATURE=0.3
+LLM_MAX_TOKENS=800
+LLM_TOP_P=0.95
+LLM_TIMEOUT=120
+
+# Embedding Settings
+EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+EMBEDDING_DIMENSION=768
+
+# Vector Store Settings
+VECTOR_STORE_TYPE=faiss
+FAISS_INDEX_PATH=data/vector_stores/faiss_peru_guide.index
+FAISS_METRIC_TYPE=l2
+
+# Retrieval Settings
+RETRIEVAL_TOP_K=3
+RETRIEVAL_SCORE_THRESHOLD=0.65
+RETRIEVAL_FETCH_K=10
+
+# API Settings
+CORS_ORIGINS=http://localhost:8501,http://localhost:3000
+API_HOST=localhost
+API_PORT=8000
+
+# Processing Settings
+CHUNK_SIZE=512
+CHUNK_OVERLAP=50
+```
+
+</details>
+
+#### **Step 5: Add Your PDFs (Optional)**
+
+```bash
+# Place your PDF files in data/raw/
+# Then run the ingestion pipeline:
+python scripts/ingest_pdfs.py
+```
+
+**Expected output:**
+```
+📚 Loading PDFs from data/raw/...
+✅ Loaded 36 documents (2,259,876 characters)
+✅ Cleaned 36 documents
+✅ Created 5,729 chunks (512 chars each, 50 overlap)
+✅ Generated 5,729 embeddings (768 dimensions)
+✅ Stored 5,729 vectors in FAISS index
+💾 Saved to: data/vector_stores/faiss_peru_guide.index (17.8 MB)
+
+⏱️ Total time: 3m 24s
+```
+
+#### **Step 6: Start the System**
+
+```bash
+# Terminal 1: Start API server
+conda activate peruguide-rag
+uvicorn src.api.main:app --reload --host localhost --port 8000
+
+# Terminal 2: Start Streamlit UI (in a new terminal)
+conda activate peruguide-rag
+streamlit run app/streamlit_app.py
+```
+
+#### **Step 7: Open in Browser**
+
+```
+🌐 http://localhost:8501
+```
+
+**You should see:**
+- ✅ Embedder loaded (768 dimensions)
+- ✅ Vector store loaded (5,729 vectors)
+- ✅ HuggingFace Mistral-7B connected (FREE tier)
 
 ---
 
 ## 💻 Usage
 
-### **Command Line Interface**
+### **Example 1: Web Interface (Recommended)**
+
+1. Open `http://localhost:8501`
+2. Type your question in Spanish or English
+3. Get answers with source citations in ~17 seconds
+
+**Example queries to try:**
+
+```
+✅ ¿Qué hacer en Cusco en 3 días?
+✅ ¿Cuáles son los mejores platos típicos de Perú?
+✅ What vaccines do I need to travel to the Peruvian jungle?
+✅ ¿Dónde puedo hacer trekking en el Valle Sagrado?
+✅ How much does Machu Picchu entrance cost?
+```
+
+### **Example 2: REST API**
 
 ```bash
-# Interactive demo with sample data
-python demo_simple.py
+# Query endpoint
+curl -X POST http://localhost:8000/api/v1/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "¿Qué platos típicos tiene la selva peruana?",
+    "top_k": 3,
+    "llm_model": "huggingface",
+    "include_metadata": true
+  }'
+```
 
-# Process your own PDFs
-python demo_quick.py
+**Response:**
+
+```json
+{
+  "answer": "La gastronomía de la selva peruana destaca por:\n\n1. **Juane**: Arroz con pollo envuelto en hojas de bijao\n2. **Tacacho con cecina**: Plátano verde machacado con carne seca\n3. **Inchicapi**: Sopa de gallina con maní y yuca\n...",
+  "sources": ["chunk_1234", "chunk_5678"],
+  "metadata": [
+    {"source_file": "Gastronomia_Peruana.pdf", "page": 3}
+  ],
+  "latency_ms": 16850,
+  "retrieval_latency_ms": 27,
+  "generation_latency_ms": 16500
+}
+```
+
+### **Example 3: Python SDK**
+
+```python
+from src.rag import AnswerGenerator
+from src.api.dependencies import get_retriever, get_llm
+
+# Initialize components
+retriever = get_retriever()
+llm = get_llm("huggingface")
+generator = AnswerGenerator(llm=llm, retriever=retriever)
+
+# Ask question
+query = "¿Qué vacunas necesito para viajar a la selva peruana?"
+response = generator.generate(query)
+
+print(f"Answer: {response.answer}")
+print(f"Sources: {response.sources}")
+print(f"Latency: {response.latency_ms}ms")
 ```
 
 ### **Sample Interaction**
+
+```python
+User: "¿Qué lugares visitar en Cusco en 3 días?"
+
+PeruGuide AI (17 seconds):
+
+"Para un itinerario de 3 días en Cusco, te recomiendo:
+
+📍 Día 1: Cusco Centro Histórico
+   - Plaza de Armas y Catedral (2-3 horas)
+   - Qoricancha - Templo del Sol (1 hora)
+   - Barrio de San Blas (artesanía)
+
+📍 Día 2: Valle Sagrado
+   - Pisac (mercado y ruinas arqueológicas)
+   - Ollantaytambo (complejo inca)
+
+📍 Día 3: Machu Picchu
+   - Salida temprano (tren 5-6 AM)
+   - Tour guiado (2-3 horas)
+   - Retorno a Cusco
+
+📄 Fuentes:
+   • Cusco_guia_oficial.pdf (páginas 12-15)
+   • Valle_Sagrado_itinerarios.pdf (página 8)
+
+⏱️ Retrieval: 27ms | Generation: 16.5s | Total: 16.527s"
 
 ```python
 User: "¿Qué lugares visitar en Cusco en 3 días?"
@@ -460,23 +653,17 @@ Basado en: Lewis et al. (2020) "Retrieval-Augmented Generation for Knowledge-Int
 - **Soporte**: Español (nativo), Inglés (nativo)
 - **Uso**: Turistas de 100+ países
 
-#### ⭐⭐⭐⭐ 4. Interactive Demos
+#### ⭐⭐⭐⭐ 4. Production-Ready Architecture
 
-> **No solo código. Demos funcionales que cualquiera puede probar.**
+> **No solo código. Sistema completo con API, UI web, y pipelines automatizados.**
 
-```bash
-# Demo 1: In-memory con datos de ejemplo (8 documentos)
-python demo_simple.py
-# ✅ 22 chunks generados
-# ✅ Respuestas en <3 segundos
-# ✅ Citations automáticas
-
-# Demo 2: Web interface profesional
-streamlit run streamlit_app.py
-# ✅ Chat history
-# ✅ Document upload
-# ✅ Confidence scores
-```
+**Components:**
+- ✅ **FastAPI** REST endpoints con validación Pydantic
+- ✅ **Streamlit** interface interactiva con chat history
+- ✅ **Automated Setup** validación de entorno con `scripts/setup.py`
+- ✅ **PDF Ingestion** pipeline completo con `scripts/ingest_pdfs.py`
+- ✅ **CORS Security** configuración basada en variables de entorno
+- ✅ **Structured Logging** logs detallados para debugging
 
 #### ⭐⭐⭐⭐ 5. Source Traceability
 
@@ -607,79 +794,143 @@ docker-compose logs -f
 
 ## 🔧 Troubleshooting
 
-### ❌ Error: "No module named 'sentence_transformers'"
+### **Quick Diagnostic**
 
-**Causa**: Dependencias no instaladas correctamente
+Run the automated setup script to check your environment:
 
-**Solución**:
 ```bash
-# Reinstalar dependencias
+python scripts/setup.py
+```
+
+This validates:
+- ✓ Python version (>= 3.10)
+- ✓ Required directories exist
+- ✓ .env configuration
+- ✓ HuggingFace token
+- ✓ PDF files present
+- ✓ Vector store index
+
+---
+
+### **Common Issues**
+
+<details>
+<summary><b>1. ModuleNotFoundError: No module named 'sentence_transformers'</b></summary>
+
+**Cause:** Dependencies not installed in correct environment
+
+**Solution:**
+```bash
+# Activate your conda environment first
+conda activate peruguide-rag
+
+# Then install dependencies
 pip install -r requirements.txt
-
-# Verificar instalación
-python -c "from sentence_transformers import SentenceTransformer; print('OK')"
 ```
 
-### ❌ Error: "OPENAI_API_KEY not found"
+</details>
 
-**Causa**: Variable de entorno no configurada
+<details>
+<summary><b>2. HUGGINGFACE_API_TOKEN not found</b></summary>
 
-**Solución**:
+**Cause:** Environment variable not configured
+
+**Solution:**
 ```bash
-# Crear archivo .env
-echo "OPENAI_API_KEY=sk-your-key-here" > .env
+# 1. Get FREE token from: https://huggingface.co/settings/tokens
+# 2. Copy .env.example to .env
+cp .env.example .env
 
-# O exportar directamente
-export OPENAI_API_KEY=sk-your-key-here  # Linux/Mac
-set OPENAI_API_KEY=sk-your-key-here     # Windows CMD
+# 3. Edit .env and add your token:
+# HUGGINGFACE_API_TOKEN=hf_your_token_here
 ```
 
-### ❌ Error: "Embedder dimension mismatch (768 vs 384)"
+</details>
 
-**Causa**: Modelo de embeddings incorrecto
+<details>
+<summary><b>3. Vector store index not found</b></summary>
 
-**Solución**:
-```python
-# Usar el modelo correcto en config
-embedder = SentenceTransformerEmbedder(
-    model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
-    dimension=768  # ← Especificar explícitamente
-)
-```
+**Cause:** PDFs haven't been ingested yet
 
-### ❌ Demo tarda mucho en cargar
-
-**Causa**: Descarga inicial del modelo (~420 MB)
-
-**Solución**:
+**Solution:**
 ```bash
-# Pre-descargar modelo manualmente
-python -c "from sentence_transformers import SentenceTransformer; \
-           SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')"
+# Place PDFs in data/raw/ then run:
+python scripts/ingest_pdfs.py
 
-# Primera ejecución puede tardar 2-3 minutos
-# Ejecuciones subsecuentes: <10 segundos
+# Expected output:
+# ✅ Created 5,729 chunks
+# ✅ Generated embeddings
+# ✅ Stored in FAISS index
 ```
 
-### 💡 Verificar Estado General
+</details>
+
+<details>
+<summary><b>4. Slow first query (~30s)</b></summary>
+
+**Cause:** Embedding model downloading (~420 MB)
+
+**Solution:** Pre-download model
+```bash
+python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')"
+```
+
+</details>
+
+<details>
+<summary><b>5. API server won't start (Port 8000 in use)</b></summary>
+
+**Cause:** Port 8000 already in use
+
+**Solution:**
+```bash
+# Check what's using port 8000
+netstat -ano | findstr :8000  # Windows
+lsof -i :8000  # Linux/Mac
+
+# Use different port
+uvicorn src.api.main:app --reload --port 8080
+```
+
+</details>
+
+<details>
+<summary><b>6. Streamlit shows "Connection Error"</b></summary>
+
+**Cause:** API server not running
+
+**Solution:**
+```bash
+# Make sure API is running first (Terminal 1)
+uvicorn src.api.main:app --reload --host localhost --port 8000
+
+# Then start Streamlit (Terminal 2)
+streamlit run app/streamlit_app.py
+```
+
+</details>
+
+---
+
+### **Verify System Health**
 
 ```bash
-# 1. Entorno Python
+# 1. Check Python environment
 conda info --envs
 python --version
 
-# 2. Dependencias críticas
-pip show langchain sentence-transformers faiss-cpu
+# 2. Verify critical dependencies
+pip show sentence-transformers faiss-cpu fastapi streamlit
 
-# 3. Archivos de datos
+# 3. Check data files
 ls data/raw/*.pdf
-ls data/vector_stores/
+ls data/vector_stores/*.index
 
-# 4. Tests básicos
-python -c "import faiss; import langchain; print('Dependencies OK')"
+# 4. Test imports
+python -c "import faiss, fastapi, streamlit; print('✅ All dependencies OK')"
 
-# 5. Demo rápido
-python demo_simple.py
+# 5. Run full validation
+python scripts/setup.py
 ```
 
 ---
