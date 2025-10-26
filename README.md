@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🇵🇪 PeruGuide AI
+![PeruGuide AI Banner](assets/banner.svg)
 
 ### *Retrieval-Augmented Generation for Peru Tourism*
 
